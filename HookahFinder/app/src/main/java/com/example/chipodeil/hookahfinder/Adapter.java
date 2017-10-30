@@ -19,9 +19,9 @@ import java.util.ArrayList;
 public class Adapter extends BaseAdapter {
     Context context;
     LayoutInflater inflater;
-    ArrayList<Item> items;
+    ArrayList<CoffeeShops> items;
 
-    Adapter(Context ctx, ArrayList<Item> items){
+    Adapter(Context ctx, ArrayList<CoffeeShops> items){
         context = ctx;
         this.items = items;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,21 +47,13 @@ public class Adapter extends BaseAdapter {
         View view = convertView;
         if(view == null)
             view = inflater.inflate(R.layout.listitem, parent, false);
-        Item currentItem =  (Item) getItem(position);
+        CoffeeShops currentItem =  (CoffeeShops) getItem(position);
         TextView title = (TextView) view.findViewById(R.id.title);
-        TextView status =(TextView) view.findViewById(R.id.opened);
-        TextView rating = (TextView) view.findViewById(R.id.rating);
+        TextView updated = (TextView) view.findViewById(R.id.updated);
         TextView averagePrice = (TextView) view.findViewById(R.id.averagePrice);
-        title.setText(currentItem.title);
-        if(currentItem.opened) {
-            status.setText("Открыто");
-            status.setTextColor(Color.GREEN);
-        }else{
-            status.setText("Закрыто");
-            status.setTextColor(Color.RED);
-        }
-        rating.setText("Рейтинг: "+currentItem.rating);
-        averagePrice.setText("Средний чек: "+currentItem.averagePrice);
+        title.setText(currentItem.getName());
+        updated.setText("Обновлено: " + currentItem.getUpdated_at());
+        averagePrice.setText("Средний чек: "+currentItem.getAverage_bill());
         return view;
     }
 
