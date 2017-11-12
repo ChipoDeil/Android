@@ -9,7 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Comment {
+import io.realm.RealmObject;
+
+public class Comment extends RealmObject{
 
     @SerializedName("id")
     @Expose
@@ -20,6 +22,20 @@ public class Comment {
     @SerializedName("text")
     @Expose
     private String text;
+
+    private int assoc_id;
+
+    public int getAssoc_id() {
+        return assoc_id;
+    }
+
+    public void setAssoc_id(int assoc_id) {
+        this.assoc_id = assoc_id;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
 
     public String getText() {
         return text;

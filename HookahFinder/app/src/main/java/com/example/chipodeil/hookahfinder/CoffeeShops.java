@@ -8,7 +8,12 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class CoffeeShops implements Serializable {
+import io.realm.RealmModel;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+
+public class CoffeeShops extends RealmObject implements Serializable{
 
     @SerializedName("updated_at")
     @Expose
@@ -25,6 +30,14 @@ public class CoffeeShops implements Serializable {
     @SerializedName("average_bill")
     @Expose
     private int average_bill;
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getName() {
         return name;

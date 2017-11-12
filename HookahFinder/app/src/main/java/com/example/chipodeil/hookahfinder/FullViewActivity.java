@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okio.BufferedSink;
@@ -25,6 +29,8 @@ public class FullViewActivity extends AppCompatActivity {
 
     ArrayList<Comment> comments;
     CoffeeShops item;
+    Realm realm;
+    ListView commentsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +43,13 @@ public class FullViewActivity extends AppCompatActivity {
         TextView desc = (TextView)findViewById(R.id.desc);
         title.setText("Название: " + item.getName());
         desc.setText("Описание: " + item.getDescription());
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("Comments.realm")
+                .build();
+        realm = Realm.getInstance(config);
         loadData();
+        commentsList = (ListView) findViewById(R.id.commentsList);
     }
 
     private void loadData(){
@@ -46,21 +58,37 @@ public class FullViewActivity extends AppCompatActivity {
             public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
                 comments = new ArrayList<>();
                 comments.addAll(response.body());
-                ArrayList<String> text = new ArrayList<>();
-                for (Comment comment : comments) {
-                    text.add(comment.getText());
-                }
-                ListView commentsList = (ListView) findViewById(R.id.commentsList);
+                ArrayList<String> text = getText(comments);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                         FullViewActivity.this,
                         android.R.layout.simple_list_item_1,
                         text);
                 commentsList.setAdapter(adapter);
+                realm.beginTransaction();
+                realm.copyToRealmOrUpdate(comments);
+                realm.commitTransaction();
             }
 
             @Override
             public void onFailure(Call<List<Comment>> call, Throwable t) {
-                Toast.makeText(FullViewActivity.this, "ooops problem!", Toast.LENGTH_SHORT).show();
+                realm.beginTransaction();
+                RealmQuery<Comment> query = realm.where(Comment.class).equalTo("assoc_id", item.getId());
+                RealmResults<Comment> result = query.findAll();
+                if(result.isEmpty()) {
+                    Toast.makeText(FullViewActivity.this, "Вы никогда не загружали данную страницу", Toast.LENGTH_SHORT).show();
+                    comments = (ArrayList<Comment>)realm.copyFromRealm(result);
+                    realm.commitTransaction();
+                    return;
+                }
+                comments = (ArrayList<Comment>)realm.copyFromRealm(result);
+                realm.commitTransaction();
+                ArrayList<String> text = getText(comments);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        FullViewActivity.this,
+                        android.R.layout.simple_list_item_1,
+                        text);
+                commentsList.setAdapter(adapter);
+
             }
         });
     }
@@ -86,6 +114,15 @@ public class FullViewActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public ArrayList<String> getText(ArrayList<Comment> comments){
+        ArrayList<String> text = new ArrayList<>();
+        for (Comment comment : comments) {
+            text.add(comment.getText());
+            comment.setAssoc_id(item.getId());
+        }
+        return text;
     }
 
 }
