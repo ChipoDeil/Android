@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.chipodeil.hookahfinder.MainActivity">
+    tools:context="com.example.chipodeil.hookahfinder.MainActivity"
+    android:background="@color/BackColor">
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="vertical">
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/mainLV">
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
 
-    </ListView>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

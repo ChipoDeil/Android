@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.chipodeil.hookahfinder.FullViewActivity">
-    <LinearLayout
+    tools:context="com.example.chipodeil.hookahfinder.FullViewActivity"
+    android:background="@color/BackColor">
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,30 +18,43 @@
         android:id="@+id/title"
         android:gravity="center"
         android:textSize="22sp"
-        android:paddingTop="15dp"/>
+        android:paddingTop="15dp"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/desc"
         android:gravity="center"
         android:textSize="18sp"
-        android:paddingTop="15dp"/>
-        <ListView
+        android:paddingTop="15dp"
+        android:layout_below="@id/title"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/comments_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/commentsList"></ListView>
+            android:layout_height="wrap_content"
+            android:layout_above="@id/newComment"
+            android:layout_below="@id/desc">
+
+        </android.support.v7.widget.RecyclerView>
         <EditText
             android:id="@+id/newComment"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"/>
+            android:layout_width="match_parent"
+            android:layout_above="@id/addCommentButton"
+            android:imeOptions="flagNoExtractUi|actionSend"
+            android:inputType="textShortMessage|textMultiLine|textCapSentences"
+            />
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Добавить комментарий"
+            android:layout_alignParentBottom="true"
             android:background="@color/colorPrimary"
-            android:onClick="addComment"/>
-    </LinearLayout>
-
-
+            android:onClick="addComment"
+            android:id="@+id/addCommentButton"
+            android:text="Добавить комментарий"
+            android:textColor="@color/BackColor"/>
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

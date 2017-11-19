@@ -3,6 +3,8 @@ package com.example.chipodeil.hookahfinder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -30,7 +32,7 @@ public class FullViewActivity extends AppCompatActivity {
     ArrayList<Comment> comments;
     CoffeeShops item;
     Realm realm;
-    ListView commentsList;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +50,12 @@ public class FullViewActivity extends AppCompatActivity {
                 .name("Comments.realm")
                 .build();
         realm = Realm.getInstance(config);
+        recyclerView = (RecyclerView)findViewById(R.id.comments_recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
         loadData();
-        commentsList = (ListView) findViewById(R.id.commentsList);
+
     }
 
     private void loadData(){
@@ -59,11 +65,13 @@ public class FullViewActivity extends AppCompatActivity {
                 comments = new ArrayList<>();
                 comments.addAll(response.body());
                 ArrayList<String> text = getText(comments);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                        FullViewActivity.this,
-                        android.R.layout.simple_list_item_1,
-                        text);
-                commentsList.setAdapter(adapter);
+                CommentsAdapter adapter = new CommentsAdapter(text, FullViewActivity.this, new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        //
+                    }
+                });
+                recyclerView.setAdapter(adapter);
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(comments);
                 realm.commitTransaction();
@@ -83,11 +91,13 @@ public class FullViewActivity extends AppCompatActivity {
                 comments = (ArrayList<Comment>)realm.copyFromRealm(result);
                 realm.commitTransaction();
                 ArrayList<String> text = getText(comments);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                        FullViewActivity.this,
-                        android.R.layout.simple_list_item_1,
-                        text);
-                commentsList.setAdapter(adapter);
+                CommentsAdapter adapter = new CommentsAdapter(text, FullViewActivity.this, new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        //
+                    }
+                });
+                recyclerView.setAdapter(adapter);
 
             }
         });
