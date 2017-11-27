@@ -24,4 +24,6 @@ public class Holder {
 
         return sb.toString();
     }
+
+    public static boolean shouldRandomize = false;
 }

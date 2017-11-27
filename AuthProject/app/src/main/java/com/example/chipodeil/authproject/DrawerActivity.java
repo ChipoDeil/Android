@@ -1,5 +1,6 @@
 package com.example.chipodeil.authproject;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +32,10 @@ public class DrawerActivity extends AppCompatActivity
     TextView username;
     User current;
     Realm realm;
+    NavigationView navigationView;
+    NotesFragment notesFragment;
+    SettingsFragment settingsFragment;
+    int currentMenu = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +58,13 @@ public class DrawerActivity extends AppCompatActivity
         Intent intent = this.getIntent();
         Bundle serializedObj = intent.getExtras();
         current = (User) serializedObj.getSerializable("data");
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        notesFragment = new NotesFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("user", current);
+        notesFragment.setArguments(bundle);
+        settingsFragment = new SettingsFragment();
     }
 
     @Override
@@ -70,13 +80,23 @@ public class DrawerActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.notes) {
-            Toast.makeText(this, "notes", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.setting) {
-            Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+        if (id == R.id.notes && id != currentMenu) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .remove(settingsFragment)
+                    .add(R.id.flContent, notesFragment)
+                    .commit();
+            currentMenu = R.id.notes;
+
+        } else if (id == R.id.setting  && id != currentMenu) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .remove(notesFragment)
+                    .add(R.id.flContent, settingsFragment)
+                    .commit();
+            currentMenu = R.id.setting;
         } else if(id == R.id.logout){
             setUnActive(current.getLogin());
             Intent intent = new Intent(this, AuthActivity.class);
